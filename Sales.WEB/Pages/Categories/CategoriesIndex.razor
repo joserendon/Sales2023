@@ -1,5 +1,5 @@
 ﻿@page "/categories"
-@inject IRepository repository 
+@inject IRepository repository
 @inject SweetAlertService sweetAlertService
 
 <h3>Categorías</h3>
@@ -29,6 +29,7 @@
                     </tr>
                 }
             </tbody>
+            <tfoot> <b>Total Categorías:</b>&nbsp;@(Categories?.Count??0)</tfoot>
         </table>
     </Body>
 </GenericList>
