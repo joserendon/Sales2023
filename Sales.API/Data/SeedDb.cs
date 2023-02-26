@@ -15,6 +15,26 @@ namespace Sales.API.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckCountriesAsync();
+            await CheckCategoriesAsync();
+        }
+
+        private async Task CheckCategoriesAsync()
+        {
+            if (!_context.Categories.Any())
+            {
+                _context.Categories.AddRange(new Category[]
+                {
+                    new (){ Name="Bebidas"},
+                    new (){ Name="Condimentos"},
+                    new (){ Name="Frutas/Verduras"},
+                    new (){ Name="Carnes"},
+                    new (){ Name="Pescado/Marisco"},
+                    new (){ Name="Lácteos"},
+                    new (){ Name="Repostería"},
+                    new (){ Name="Granos/Cereales"},
+                });
+                await _context.SaveChangesAsync();
+            }
         }
 
         private async Task CheckCountriesAsync()
