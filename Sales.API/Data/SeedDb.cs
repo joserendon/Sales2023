@@ -26,12 +26,23 @@ namespace Sales.API.Data
                 {
                     new (){ Name="Bebidas"},
                     new (){ Name="Condimentos"},
-                    new (){ Name="Frutas/Verduras"},
+                    new (){ Name="Frutas"},
                     new (){ Name="Carnes"},
-                    new (){ Name="Pescado/Marisco"},
+                    new (){ Name="Pescado"},
                     new (){ Name="Lácteos"},
                     new (){ Name="Repostería"},
-                    new (){ Name="Granos/Cereales"},
+                    new (){ Name="Granos"},
+                    new (){ Name="Calzado"},
+                    new (){ Name="Productos de Belleza"},
+                    new (){ Name="Verduras"},
+                    new (){ Name="Cereales"},
+                    new (){ Name="Carnes Frias"},
+                    new (){ Name="Mariscos"},
+                    new (){ Name="Endulzantes"},
+                    new (){ Name="Electrodomesticos"},
+                    new (){ Name="Papeleria"},
+                    new (){ Name="Concentrados"},
+                    new (){ Name="Electrónica"},
                 });
                 await _context.SaveChangesAsync();
             }
