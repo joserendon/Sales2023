@@ -3,7 +3,7 @@
 
         @foreach (var link in Links)
         {
-            <li @onclick=@(() => InternalSelectedPage(link)) style="cursor: pointer" class="page-item @(link.Enable ? null : "disabled") @(link.Enable ? "active" : null)">
+            <li @onclick=@(() => InternalSelectedPage(link)) style="cursor: pointer" class="page-item @(link.Enable ? null : "disabled") @(link.Active ? "active" : null)">
                 <a class="page-link">@link.Text</a>
             </li>
         }
@@ -13,50 +13,76 @@
 @code {
     [Parameter] public int CurrentPage { get; set; } = 1;
     [Parameter] public int TotalPages { get; set; }
-    [Parameter] public int Radio { get; set; } = 5;
+    [Parameter] public int Radio { get; set; } = 10;
     [Parameter] public EventCallback<int> SelectedPage { get; set; }
+
+    const string previousLinkPageText = "Anterior";
+    const string nextLinkPageText = "Siguiente";
+    const string firstLinkPageText = "Primera";
+    const string lastLinkPageText = "Ultima";
+
+
     List<PageModel> Links = new();
+
+    private int previousLinkPage { get => CurrentPage - 1; }
+    private int nextLinkPage { get => CurrentPage + 1; }
+    private int endRadioPage { get => (int)(Math.Ceiling((decimal)CurrentPage / Radio) * Radio); }
+    private int startRadioPage { get => CurrentPage > Radio ? endRadioPage - Radio + 1 : 1; }
 
     protected override void OnParametersSet()
     {
+        var previousLinkEnable = CurrentPage != 1;
+
         Links = new List<PageModel>();
 
-        var previousLinkEnable = CurrentPage != 1;
-        var previousLinkPage = CurrentPage - 1;
-        Links.Add(new PageModel
+        Links.Add(new PageModel()
             {
-                Text = "Anterior",
+                Text = firstLinkPageText,
+                Page = 1,
+                Enable = previousLinkEnable,
+                Active = true
+            });
+        Links.Add(new PageModel()
+            {
+                Text = previousLinkPageText,
                 Page = previousLinkPage,
-                Enable = previousLinkEnable
+                Enable = previousLinkEnable,
+                Active = true
             });
 
-        for (int i = 1; i <= TotalPages; i++)
+        for (int i = startRadioPage; i <= TotalPages; i++)
         {
-            if (i >= CurrentPage - Radio && i <= CurrentPage + Radio)
-            {
-                Links.Add(new PageModel
-                    {
-                        Page = i,
-                        Enable = CurrentPage == i,
-                        Text = $"{i}"
-                    });
-            }
+            if (Links.Count() >= Radio + 2) break;
+
+            Links.Add(new PageModel
+                {
+                    Page = i,
+                    Active = CurrentPage == i,
+                    Text = $"{i}"
+                });
         }
 
         var linkNextEnable = CurrentPage != TotalPages;
-        var linkNextPage = CurrentPage + 1;
         Links.Add(new PageModel
             {
-                Text = "Siguiente",
-                Page = linkNextPage,
-                Enable = linkNextEnable
+                Text = nextLinkPageText,
+                Page = nextLinkPage,
+                Enable = linkNextEnable,
+                Active = true
             });
 
+        Links.Add(new PageModel()
+            {
+                Text = lastLinkPageText,
+                Page = TotalPages,
+                Enable = linkNextEnable,
+                Active = true
+            });
     }
 
     private async Task InternalSelectedPage(PageModel pageModel)
     {
-        if (pageModel.Page == CurrentPage || pageModel.Page == 0)
+        if (pageModel.Page == CurrentPage || !pageModel.Enable)
         {
             return;
         }
