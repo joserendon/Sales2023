@@ -2,7 +2,10 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Sales.API.Data;
+using Sales.API.Helpers;
+using Sales.Shared.DTOs;
 using Sales.Shared.Entities;
+using Sales.Shared.Responses;
 
 namespace Sales.API.Controllers
 {
@@ -18,9 +21,35 @@ namespace Sales.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(await _context.Categories.ToListAsync());
+            var queryable = _context.Categories.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return Ok(await queryable.OrderBy(x => x.Name).Paginate(pagination).ToListAsync());
+        }
+        [HttpGet("totalPages")]
+        public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _context.Categories.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double totalRecords = await queryable.CountAsync();
+            double totalPages = Math.Ceiling(totalRecords / pagination.RecordsNumber);
+
+            return Ok(new PaginationResponse()
+            {
+                totalPages = (int)totalPages,
+                totalRecords = (int)totalRecords
+            });
         }
 
         [HttpGet("{id:int}")]
