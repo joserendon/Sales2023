@@ -1,19 +1,20 @@
-﻿<nav>
-    <ul class="pagination">
-
-        @foreach (var link in Links)
-        {
-            <li @onclick=@(() => InternalSelectedPage(link)) style="cursor: pointer" class="page-item @(link.Enable ? null : "disabled") @(link.Active ? "active" : null)">
-                <a class="page-link">@link.Text</a>
-            </li>
-        }
-    </ul>
-</nav>
-
+﻿<div class="justify-content-end d-flex">
+    <nav>
+        <ul class="pagination">
+            @foreach (var link in Links)
+            {
+                <li @onclick=@(() => InternalSelectedPage(link)) style="cursor: pointer; @(int.TryParse(link.Text, out int _)? "width: 2.5rem" : "")" class="page-item @(link.Enable ? null : "disabled") @(link.Active ? "active" : null)">
+                    <a class="page-link">@link.Text</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
 @code {
     [Parameter] public int CurrentPage { get; set; } = 1;
     [Parameter] public int TotalPages { get; set; }
     [Parameter] public int Radio { get; set; } = 10;
+    [Parameter] public bool SecuencialPagination { get; set; } = true;
     [Parameter] public EventCallback<int> SelectedPage { get; set; }
 
     const string previousLinkPageText = "Anterior";
@@ -21,13 +22,12 @@
     const string firstLinkPageText = "Primera";
     const string lastLinkPageText = "Ultima";
 
-
     List<PageModel> Links = new();
 
     private int previousLinkPage { get => CurrentPage - 1; }
     private int nextLinkPage { get => CurrentPage + 1; }
     private int endRadioPage { get => (int)(Math.Ceiling((decimal)CurrentPage / Radio) * Radio); }
-    private int startRadioPage { get => CurrentPage > Radio ? endRadioPage - Radio + 1 : 1; }
+    private int startRadioPage { get => CurrentPage > Radio ? (SecuencialPagination ? CurrentPage - Radio + 1 : endRadioPage - Radio + 1) : 1; }
 
     protected override void OnParametersSet()
     {
