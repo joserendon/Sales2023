@@ -27,7 +27,7 @@
     private int previousLinkPage { get => CurrentPage - 1; }
     private int nextLinkPage { get => CurrentPage + 1; }
     private int endRadioPage { get => (int)(Math.Ceiling((decimal)CurrentPage / Radio) * Radio); }
-    private int startRadioPage { get => CurrentPage > Radio ? (SecuencialPagination ? CurrentPage - Radio + 1 : endRadioPage - Radio + 1) : 1; }
+    private int startRadioPage { get => CurrentPage > Radio ? (SecuencialPagination ? CurrentPage : endRadioPage) - Radio + 1 : 1; }
 
     protected override void OnParametersSet()
     {
