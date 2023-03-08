@@ -17,13 +17,12 @@
     [Parameter] public bool SecuencialPagination { get; set; } = true;
     [Parameter] public EventCallback<int> SelectedPage { get; set; }
 
-    const string previousLinkPageText = "Anterior";
-    const string nextLinkPageText = "Siguiente";
-    const string firstLinkPageText = "Primera";
-    const string lastLinkPageText = "Ultima";
+    private const string previousLinkPageText = "Anterior";
+    private const string nextLinkPageText = "Siguiente";
+    private const string firstLinkPageText = "Primera";
+    private const string lastLinkPageText = "Ultima";
 
-    List<PageModel> Links = new();
-
+    private List<PageModel> Links = new();
     private int previousLinkPage { get => CurrentPage - 1; }
     private int nextLinkPage { get => CurrentPage + 1; }
     private int endRadioPage { get => (int)(Math.Ceiling((decimal)CurrentPage / Radio) * Radio); }
