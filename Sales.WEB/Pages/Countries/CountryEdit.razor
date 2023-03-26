@@ -6,13 +6,13 @@
 
 <h3>Editar País</h3>
 
-@if(country is null)
+@if (country is null)
 {
-    <div class="spinner"/>
+    <div class="spinner" />
 }
 else
 {
-    <CountryForm @ref="countryForm" Country="country" OnValidSubmit="EditAsync" ReturnAction="Return"/>
+    <CountryForm @ref="countryForm" Country="country" OnValidSubmit="EditAsync" ReturnAction="Return" />
 }
 
 @code {
